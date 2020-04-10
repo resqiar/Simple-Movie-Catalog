@@ -4,8 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -14,20 +12,19 @@ import com.example.moviesapp.R
 import com.example.moviesapp.backend.data.`object`.Result
 import com.example.moviesapp.backend.data.api.POSTER_PATH
 import com.example.moviesapp.backend.data.repository.NetworkState
-import com.example.moviesapp.ui.movies.detailfragment.DetailMovies
-import kotlinx.android.synthetic.main.fragment_movies.view.*
 import kotlinx.android.synthetic.main.item_row_movie.view.*
 import kotlinx.android.synthetic.main.network_state_item.view.*
 
-class MovieAdapter(val context: Context): PagedListAdapter<Result, RecyclerView.ViewHolder>(DiffCallback()) {
+class MovieAdapter(val context: Context) :
+    PagedListAdapter<Result, RecyclerView.ViewHolder>(DiffCallback()) {
 
     // dua jenis variable yg akan dipilih ( recyclerview / network state )
     val MOVIE_TYPE = 1
     val NETWORK_TYPE = 2
-    private var networkState : NetworkState? = null
+    private var networkState: NetworkState? = null
 
     // constructor butuh class DIFF UTIl
-     class DiffCallback : DiffUtil.ItemCallback<Result>(){
+    class DiffCallback : DiffUtil.ItemCallback<Result>() {
         override fun areItemsTheSame(oldItem: Result, newItem: Result): Boolean {
             return oldItem.id == newItem.id
         }
@@ -40,27 +37,27 @@ class MovieAdapter(val context: Context): PagedListAdapter<Result, RecyclerView.
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
-        val view : View
+        val view: View
 
         // jika MOVIE_TYPE maka inflate recyclerview item
-        if (viewType == MOVIE_TYPE){
+        if (viewType == MOVIE_TYPE) {
             view = layoutInflater.inflate(R.layout.item_row_movie, parent, false)
             return MovieViewHolder(view)
-        }else{
-            view = layoutInflater.inflate(R.layout.network_state_item, parent , false)
+        } else {
+            view = layoutInflater.inflate(R.layout.network_state_item, parent, false)
             return NetworkStateItemViewHolder(view)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (getItemViewType(position) == MOVIE_TYPE){
+        if (getItemViewType(position) == MOVIE_TYPE) {
             (holder as MovieViewHolder).bind(getItem(position), context)
-        }else
+        } else
             (holder as NetworkStateItemViewHolder).bind(networkState)
     }
 
     // cek apakah masih ada baris baru
-    private fun extraRow(): Boolean{
+    private fun extraRow(): Boolean {
         return networkState != null && networkState != NetworkState.LOADED
     }
 
@@ -69,36 +66,36 @@ class MovieAdapter(val context: Context): PagedListAdapter<Result, RecyclerView.
     }
 
     override fun getItemViewType(position: Int): Int {  // tipe yg akan di inflate
-        return if(extraRow() && position == itemCount -1){
+        return if (extraRow() && position == itemCount - 1) {
             NETWORK_TYPE
-        }else{
+        } else {
             MOVIE_TYPE
         }
     }
 
     // inisialisasi networkState
-    fun setNetworkState(nNetworkState: NetworkState){
-            // current Network State
+    fun setNetworkState(nNetworkState: NetworkState) {
+        // current Network State
         val previousState = this.networkState
         val hadExtraRow = extraRow()
-            // new Network state
+        // new Network state
         this.networkState = nNetworkState
         val hasExtraRow = extraRow()
 
         // cek extra row
-        if (hadExtraRow != hasExtraRow){
-            when{
+        if (hadExtraRow != hasExtraRow) {
+            when {
                 hadExtraRow -> notifyItemRemoved(super.getItemCount())
                 hasExtraRow -> notifyItemInserted(super.getItemCount())
             }
-        }else if(hasExtraRow && previousState != nNetworkState){ // hasExtraRow dan hadExtraRow sama // ERROR
-                notifyItemChanged(itemCount -1)
+        } else if (hasExtraRow && previousState != nNetworkState) { // hasExtraRow dan hadExtraRow sama // ERROR
+            notifyItemChanged(itemCount - 1)
         }
     }
 
     // VIEW HOLDER CLASS
-    inner class MovieViewHolder(view : View): RecyclerView.ViewHolder(view){
-        fun bind(movie : Result?, context: Context) {
+    inner class MovieViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(movie: Result?, context: Context) {
             itemView.movie_name.text = movie?.title
             itemView.movie_date.text = movie?.releaseDate
 
@@ -109,7 +106,7 @@ class MovieAdapter(val context: Context): PagedListAdapter<Result, RecyclerView.
                 .load(posterUrl)
                 .into(itemView.movie_img)
 
-            itemView.setOnClickListener{
+            itemView.setOnClickListener {
                 // buat onclick listener yang akan menuju detail Fragment
                 onItemClickCallback?.onItemClicked(movie?.id)
             }
@@ -117,24 +114,24 @@ class MovieAdapter(val context: Context): PagedListAdapter<Result, RecyclerView.
     }
 
     // buat interface yang akkan membuat itemnya mencjadi clickable
-    private var onItemClickCallback : OnItemClickCallback? = null
+    private var onItemClickCallback: OnItemClickCallback? = null
 
     interface OnItemClickCallback {
-        fun onItemClicked(id : Int?)
+        fun onItemClicked(id: Int?)
     }
 
     // fungsi callback
-    fun setOnItemClickCallback(onItemClickCallback : OnItemClickCallback){
+    fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
     }
 
     // NETWORK STATE CLASS
-    class NetworkStateItemViewHolder(view: View): RecyclerView.ViewHolder(view){
-        fun bind(networkState : NetworkState?){
+    class NetworkStateItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        fun bind(networkState: NetworkState?) {
             // cek ketika state loading maka tampilkan loading
-            if (networkState != null && networkState == NetworkState.LOADING){
+            if (networkState != null && networkState == NetworkState.LOADING) {
                 itemView.movie_network_progressbar.visibility = View.VISIBLE
-            }else{
+            } else {
                 itemView.movie_network_progressbar.visibility = View.GONE
             }
 
@@ -147,8 +144,7 @@ class MovieAdapter(val context: Context): PagedListAdapter<Result, RecyclerView.
             else if (networkState != null && networkState == NetworkState.EMPTY) {
                 itemView.movie_network_messages.visibility = View.VISIBLE
                 itemView.movie_network_messages.text = networkState.message
-            }
-            else {
+            } else {
                 itemView.movie_network_messages.visibility = View.GONE
             }
         }

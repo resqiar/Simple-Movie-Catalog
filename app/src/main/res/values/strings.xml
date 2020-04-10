@@ -3,15 +3,9 @@
     <string name="menu_movies">Movies</string>
     <string name="menu_tvshow">TV Show</string>
 
-    <string name="text_logo_navDraw">movies app</string>
     <string name="action_language">Languages</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="action_detail">Take Action</string>
-    <string name="btn_watchlist">Watchlist</string>
-    <string name="overview">Overview</string>
-    <string name="release_year">- release year</string>
-    <string name="btn_add_watchlist"> added to watchlist</string>
     <string name="check_your_internet_connection">Check your internet connection!</string>
 
 

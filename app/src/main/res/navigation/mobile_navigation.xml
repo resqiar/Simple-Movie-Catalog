@@ -2,16 +2,13 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_movies">
     <fragment
         android:id="@+id/navigation_movies"
         android:name="com.example.moviesapp.ui.movies.MoviesFragment"
         android:label="@string/menu_movies"
         tools:layout="@layout/fragment_movies" >
-        <action
-            android:id="@+id/action_navigation_movies_to_navigation_detail_movies"
-            app:destination="@id/navigation_detail_movies" />
+        <action app:destination="@id/navigation_detail_movies" />
     </fragment>
 
     <fragment
@@ -24,9 +21,7 @@
         android:name="com.example.moviesapp.ui.tvshow.TvShowFragment"
         android:label="@string/menu_tvshow"
         tools:layout="@layout/fragment_tvshow">
-        <action
-            android:id="@+id/action_navigation_tvshow_to_navigation_detail_tvshow"
-            app:destination="@id/navigation_detail_tvshow" />
+        <action app:destination="@id/navigation_detail_tvshow" />
     </fragment>
 
     <fragment

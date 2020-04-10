@@ -13,7 +13,6 @@
 
     <ImageView
         android:contentDescription="@string/app_name"
-        android:id="@+id/imageView"
         android:layout_width="282dp"
         android:layout_height="102dp"
         app:layout_constraintBottom_toBottomOf="parent"

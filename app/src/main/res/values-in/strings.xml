@@ -5,15 +5,9 @@
     <string name="menu_movies">Film</string>
     <string name="menu_tvshow">Serial TV</string>
 
-    <string name="text_logo_navDraw">movies app</string>
     <string name="action_language">Bahasa</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="action_detail">Beri Aksi</string>
-    <string name="btn_watchlist">Tambah Koleksi</string>
-    <string name="overview">Sinopsis</string>
-    <string name="release_year">- Tahun Rilis</string>
-    <string name="btn_add_watchlist"> Ditambahkan</string>
 
     <string name="check_your_internet_connection">Cek koneksi internet anda!</string>
 
