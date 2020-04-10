@@ -4,20 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.moviesapp.R
-import com.example.moviesapp.ui.tvshow.adapter.TVshowAdapter
-import com.example.moviesapp.ui.tvshow.detailFragment.detailTvshow
-import com.example.moviesapp.ui.tvshow.detailFragment.detailTvshow.Companion.DATA_DETAIL_TVSHOW
+import com.example.moviesapp.backend.data.api.MovieDBClient
+import com.example.moviesapp.backend.data.api.MovieDBInterface
+import com.example.moviesapp.backend.data.repository.NetworkState
+import com.example.moviesapp.ui.movies.MovieListRepository
+import com.example.moviesapp.ui.movies.detailfragment.DetailMovies
+import com.example.moviesapp.ui.movies.viewmodel.MovieViewModel
+import com.example.moviesapp.ui.tvshow.adapter.TVAdapter
+import com.example.moviesapp.ui.tvshow.detailFragment.DetailTvshow
+import com.example.moviesapp.ui.tvshow.viewmodel.TVViewModel
 import kotlinx.android.synthetic.main.fragment_tvshow.*
 
 class TvShowFragment : Fragment() {
 
-    private val tvshow = ArrayList<TVshow>()
+    // view model
+    private lateinit var viewModel : TVViewModel
+    // pagination
+    lateinit var tvListRepository: TVListRepository
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -31,67 +40,77 @@ class TvShowFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         rv_tvshow.setHasFixedSize(true)
-        // tambahkan semua item
-        tvshow.addAll(getListTVshow())
-        //panggil fungsi grid
-        showRecyclerGrid()
-    }
 
-    // fungsi mengambil daftar movies dari array
-    private fun getListTVshow(): ArrayList<TVshow>{
-        val dataName = resources.getStringArray(R.array.data_name_tvshow)
-        val dataDate = resources.getStringArray(R.array.data_date_tvshow)
-        val dataScore = resources.getStringArray(R.array.data_score_tvshow)
-        val dataGenre = resources.getStringArray(R.array.data_genre_tvshow)
-        val dataDec = resources.getStringArray(R.array.data_dec_tvshow)
-        val dataPhoto = resources.obtainTypedArray(R.array.data_photo_tvshow)
+        // API SERVICE
+        val api : MovieDBInterface = MovieDBClient.getClient()
+        tvListRepository = TVListRepository(api)
 
-        val listTVshow = ArrayList<TVshow>()
-        for(position in dataName.indices){
-            val tvshow = TVshow(
-                dataName[position],
-                dataDate[position],
-                dataScore[position],
-                dataGenre[position],
-                dataDec[position],
-                dataPhoto.getResourceId(position, -1)
-            )
-            listTVshow.add(tvshow)
+        // VIEW MODEL
+        viewModel = getViewModel()
+
+        // SHOW RECYCLERVIEW
+        val tvAdapter = context?.let { TVAdapter(it) }
+        val gridLayoutManager = GridLayoutManager(context, 3)
+        // modify span
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
+            override fun getSpanSize(position: Int): Int {
+                val viewType = tvAdapter?.getItemViewType(position)
+                return if (viewType == tvAdapter?.TV_TYPE) 1 else 3 // jika MOVIE_TYPE maka occupy menjadi 1 baris
+            }
         }
+        // set adapter
+        rv_tvshow.layoutManager = gridLayoutManager
+        rv_tvshow.adapter = tvAdapter
+        tvAdapter?.setOnItemClickCallback(object : TVAdapter.OnItemClickCallback{
+            override fun onItemClicked(id: Int?) {
 
-        dataPhoto.recycle()
-        return listTVshow
-    }
-
-    private fun showRecyclerGrid() {
-        rv_tvshow.layoutManager = GridLayoutManager(context, 3)
-        val gridHeroAdapter = TVshowAdapter(tvshow)
-        rv_tvshow.adapter = gridHeroAdapter
-
-        // buat fungsi untuk click callback
-        gridHeroAdapter.setOnItemClickCallback( object : TVshowAdapter.OnItemClickCallback{
-            override fun onItemClicked(data: TVshow) {
-
-                //siapkan data parcelable
-                    val fragGet = detailTvshow()
-                    val bundle = Bundle()
+                //siapkan data
+                val fragGet = DetailTvshow()
+                val bundle = Bundle()
 
                 // masukkan ke bundle
-                    bundle.putParcelable(DATA_DETAIL_TVSHOW, data)
-                    fragGet.arguments = bundle
+                if (id != null) {
+                    bundle.putInt("id", id)
+                }
+                fragGet.arguments = bundle
 
                 // buat perpindahan fragment
                 val mFragment = fragmentManager
                 mFragment?.beginTransaction()?.apply {
-                    add(R.id.nav_host_fragment, fragGet, detailTvshow::class.java.simpleName)
+                    add(R.id.nav_host_fragment, fragGet, DetailTvshow::class.java.simpleName)
                     addToBackStack(null)
                     commit()
                 }
-
-
             }
+
         })
 
+
+        // VIEW MODEL
+        viewModel.tvPagedList.observe(viewLifecycleOwner, Observer {
+            tvAdapter?.submitList(it)
+        })
+        // network state
+        viewModel.networkState.observe(viewLifecycleOwner, Observer {
+            progressBar_tv.visibility = if (viewModel.isEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
+            error_messages_tv.visibility = if ( viewModel.isEmpty() && it == NetworkState.ERROR) View.VISIBLE else View.GONE
+
+            if (!viewModel.isEmpty()){
+                tvAdapter?.setNetworkState(it)
+            }
+
+        })
     }
 
+
+
+    // get view model
+    fun getViewModel(): TVViewModel{
+        return ViewModelProvider(this, object : ViewModelProvider.Factory{
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                @Suppress("UNCHECKED_CAST")
+                return TVViewModel(tvListRepository) as T
+            }
+        })[TVViewModel::class.java]
+    }
 }

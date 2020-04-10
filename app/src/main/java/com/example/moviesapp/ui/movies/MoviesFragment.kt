@@ -1,26 +1,32 @@
 package com.example.moviesapp.ui.movies
 
-import android.content.Intent
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.replace
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.moviesapp.R
-import com.example.moviesapp.ui.movies.adapter.MoviesAdapter
+import com.example.moviesapp.backend.data.`object`.MovieDetails
+import com.example.moviesapp.backend.data.api.MovieDBClient
+import com.example.moviesapp.backend.data.api.MovieDBInterface
+import com.example.moviesapp.backend.data.repository.NetworkState
+import com.example.moviesapp.ui.movies.adapter.MovieAdapter
 import com.example.moviesapp.ui.movies.detailfragment.DetailMovies
-import com.example.moviesapp.ui.movies.detailfragment.DetailMovies.Companion.DATA_DETAIL_MOVIE
+import com.example.moviesapp.ui.movies.viewmodel.MovieViewModel
 import kotlinx.android.synthetic.main.fragment_movies.*
+import kotlinx.android.synthetic.main.network_state_item.*
 
 class MoviesFragment : Fragment() {
-    private val movie = ArrayList<Movie>()
+
+    // view model
+    private lateinit var viewModel : MovieViewModel
+    // pagination
+    lateinit var movieListRepository: MovieListRepository
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -34,66 +40,76 @@ class MoviesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         rv_movies.setHasFixedSize(true)
-        // panggil fungsi getListMovies
-        movie.addAll(getListMovies())
-        //panggil fungsi Grid Recycle
-        showRecyclerGrid()
-        // tambah listener ke setiap item recycler
-    }
 
-    // fungsi mengambil daftar movies dari array
-    private fun getListMovies(): ArrayList<Movie>{
-        val dataName = resources.getStringArray(R.array.data_name_movies)
-        val dataDate = resources.getStringArray(R.array.data_date_movies)
-        val dataScore = resources.getStringArray(R.array.data_score_movies)
-        val dataGenre = resources.getStringArray(R.array.data_genre_movies)
-        val dataDec = resources.getStringArray(R.array.data_dec_movies)
-        val dataPhoto = resources.obtainTypedArray(R.array.data_photo_movies)
+        // API SERVICE
+        val api : MovieDBInterface = MovieDBClient.getClient()
+        movieListRepository = MovieListRepository(api)
 
-        val listMovie = ArrayList<Movie>()
-        for(position in dataName.indices){
-            val movie = Movie(
-                dataName[position],
-                dataDate[position],
-                dataScore[position],
-                dataGenre[position],
-                dataDec[position],
-                dataPhoto.getResourceId(position, -1)
-            )
-            listMovie.add(movie)
+        // VIEW MODEL
+        viewModel = getViewModel()
+
+        // SHOW RECYCLERVIEW
+        val movieAdapter = context?.let { MovieAdapter(it) }
+        val gridLayoutManager = GridLayoutManager(context, 3)
+        // modify span
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
+            override fun getSpanSize(position: Int): Int {
+                val viewType = movieAdapter?.getItemViewType(position)
+                return if (viewType == movieAdapter?.MOVIE_TYPE) 1 else 3 // jika MOVIE_TYPE maka occupy menjadi 1 baris
+            }
         }
+        // set adapter
+        rv_movies.layoutManager = gridLayoutManager
+        rv_movies.adapter = movieAdapter
+        movieAdapter?.setOnItemClickCallback(object : MovieAdapter.OnItemClickCallback{
+            override fun onItemClicked(id: Int?) {
 
-        dataPhoto.recycle()
-        return listMovie
-    }
-
-    private fun showRecyclerGrid() {
-        rv_movies.layoutManager = GridLayoutManager(context, 3)
-        val gridHeroAdapter = MoviesAdapter(movie)
-        rv_movies.adapter = gridHeroAdapter
-
-        gridHeroAdapter.setOnItemClickCallback(object : MoviesAdapter.OnItemClickCallback{
-            override fun onItemClicked(data: Movie) {
-
-                // masukkan data
+                //siapkan data parcelable
                 val fragGet = DetailMovies()
                 val bundle = Bundle()
 
-                bundle.putParcelable(DATA_DETAIL_MOVIE, data)
+                // masukkan ke bundle
+                if (id != null) {
+                    bundle.putInt("id", id)
+                }
                 fragGet.arguments = bundle
 
-
-                // buat intent
+                // buat perpindahan fragment
                 val mFragment = fragmentManager
                 mFragment?.beginTransaction()?.apply {
-                    add(R.id.nav_host_fragment, fragGet, DetailMovies::class.java.simpleName)
+                    add(R.id.nav_host_fragment, fragGet, MovieDetails::class.java.simpleName)
                     addToBackStack(null)
                     commit()
                 }
-
-
             }
+
         })
 
+
+        // VIEW MODEL
+        viewModel.moviePagedList.observe(viewLifecycleOwner, Observer {
+            movieAdapter?.submitList(it)
+        })
+        // network state
+        viewModel.networkState.observe(viewLifecycleOwner, Observer {
+            progressBar_movie.visibility = if (viewModel.isEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
+            error_messages_movies.visibility = if ( viewModel.isEmpty() && it == NetworkState.ERROR) View.VISIBLE else View.GONE
+
+            if (!viewModel.isEmpty()){
+                movieAdapter?.setNetworkState(it)
+            }
+
+        })
     }
+
+
+        // get view model
+        fun getViewModel(): MovieViewModel{
+            return ViewModelProvider(this, object : ViewModelProvider.Factory{
+                override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                    @Suppress("UNCHECKED_CAST")
+                    return MovieViewModel(movieListRepository) as T
+                }
+            })[MovieViewModel::class.java]
+        }
 }
