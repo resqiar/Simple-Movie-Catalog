@@ -7,23 +7,30 @@
     android:background="#410420"
     tools:context=".ui.movies.MoviesFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
         <ProgressBar
             android:id="@+id/progressBar_tv"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
+            android:gravity="center"
+            android:elevation="5dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:visibility="gone"/>
 
         <TextView
             android:textColor="@color/colorAccent"
             android:text="@string/check_your_internet_connection"
-            android:gravity="center"
-            android:visibility="gone"
             android:id="@+id/error_messages_tv"
+            android:gravity="center"
+            android:elevation="5dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
@@ -32,8 +39,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
-            tools:listitem="@layout/item_row_tvshow" />
-    </LinearLayout>
-
-
+            tools:listitem="@layout/item_row_tvshow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,9 +13,6 @@ import com.example.moviesapp.R
 import com.example.moviesapp.backend.data.api.MovieDBClient
 import com.example.moviesapp.backend.data.api.MovieDBInterface
 import com.example.moviesapp.backend.data.repository.NetworkState
-import com.example.moviesapp.ui.movies.MovieListRepository
-import com.example.moviesapp.ui.movies.detailfragment.DetailMovies
-import com.example.moviesapp.ui.movies.viewmodel.MovieViewModel
 import com.example.moviesapp.ui.tvshow.adapter.TVAdapter
 import com.example.moviesapp.ui.tvshow.detailFragment.DetailTvshow
 import com.example.moviesapp.ui.tvshow.viewmodel.TVViewModel
@@ -24,14 +21,14 @@ import kotlinx.android.synthetic.main.fragment_tvshow.*
 class TvShowFragment : Fragment() {
 
     // view model
-    private lateinit var viewModel : TVViewModel
+    private lateinit var viewModel: TVViewModel
     // pagination
     lateinit var tvListRepository: TVListRepository
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_tvshow, container, false)
     }
@@ -42,7 +39,7 @@ class TvShowFragment : Fragment() {
         rv_tvshow.setHasFixedSize(true)
 
         // API SERVICE
-        val api : MovieDBInterface = MovieDBClient.getClient()
+        val api: MovieDBInterface = MovieDBClient.getClient()
         tvListRepository = TVListRepository(api)
 
         // VIEW MODEL
@@ -52,7 +49,7 @@ class TvShowFragment : Fragment() {
         val tvAdapter = context?.let { TVAdapter(it) }
         val gridLayoutManager = GridLayoutManager(context, 3)
         // modify span
-        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup(){
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 val viewType = tvAdapter?.getItemViewType(position)
                 return if (viewType == tvAdapter?.TV_TYPE) 1 else 3 // jika MOVIE_TYPE maka occupy menjadi 1 baris
@@ -61,7 +58,7 @@ class TvShowFragment : Fragment() {
         // set adapter
         rv_tvshow.layoutManager = gridLayoutManager
         rv_tvshow.adapter = tvAdapter
-        tvAdapter?.setOnItemClickCallback(object : TVAdapter.OnItemClickCallback{
+        tvAdapter?.setOnItemClickCallback(object : TVAdapter.OnItemClickCallback {
             override fun onItemClicked(id: Int?) {
 
                 //siapkan data
@@ -92,10 +89,12 @@ class TvShowFragment : Fragment() {
         })
         // network state
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
-            progressBar_tv.visibility = if (viewModel.isEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
-            error_messages_tv.visibility = if ( viewModel.isEmpty() && it == NetworkState.ERROR) View.VISIBLE else View.GONE
+            progressBar_tv.visibility =
+                if (viewModel.isEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
+            error_messages_tv.visibility =
+                if (viewModel.isEmpty() && it == NetworkState.ERROR) View.VISIBLE else View.GONE
 
-            if (!viewModel.isEmpty()){
+            if (!viewModel.isEmpty()) {
                 tvAdapter?.setNetworkState(it)
             }
 
@@ -103,10 +102,9 @@ class TvShowFragment : Fragment() {
     }
 
 
-
     // get view model
-    fun getViewModel(): TVViewModel{
-        return ViewModelProvider(this, object : ViewModelProvider.Factory{
+    fun getViewModel(): TVViewModel {
+        return ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
                 return TVViewModel(tvListRepository) as T

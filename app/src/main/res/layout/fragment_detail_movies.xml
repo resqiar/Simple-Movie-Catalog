@@ -1,151 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#410420"
+    android:fillViewport="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.movies.detailfragment.DetailMovies"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#410420"
+        >
+
+        <ProgressBar
+            android:id="@+id/progress_detail"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:elevation="5dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/error_messages_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textColor="@color/colorAccent"
+            android:text="@string/check_your_internet_connection"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:elevation="5dp"
+            android:gravity="center"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/tv_poster_movie"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            tools:src="@color/colorAccent"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardIMG"
+            android:layout_width="150dp"
+            android:layout_height="250dp"
+            android:elevation="4dp"
+            app:cardCornerRadius="4dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="50dp"
+            app:cardBackgroundColor="#410420"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <ImageView
+                android:id="@+id/tv_img_movie"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <ProgressBar
-                    android:id="@+id/progress_detail"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:visibility="gone"/>
-
-                <TextView
-                    android:id="@+id/error_messages_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textColor="@color/colorAccent"
-                    android:text="@string/check_your_internet_connection"
-                    android:gravity="center"
-                    android:visibility="gone"/>
+                android:scaleType="centerCrop"
+                tools:src="@drawable/poster_secretbenghazi" />
+        </androidx.cardview.widget.CardView>
 
 
-            <ScrollView android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                >
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#410420">
+        <TextView
+            android:id="@+id/tv_name_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/source_sans_pro"
+            android:textColor="#00E5FF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardIMG"
+            tools:text="13 Hours In Desert" />
 
-                <ImageView
-                    android:id="@+id/tv_poster_movie"
-                    android:layout_width="match_parent"
-                    android:layout_height="250dp"
-                    tools:src="@color/colorAccent"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/tv_genre_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="#76FF03"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_date_movie"
+            app:layout_constraintTop_toBottomOf="@+id/tv_date_movie"
+            tools:text="Drama , Technology, Adventure" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardIMG"
-                    android:layout_width="150dp"
-                    android:layout_height="250dp"
-                    android:elevation="4dp"
-                    app:cardCornerRadius="4dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="50dp"
-                    app:cardBackgroundColor="#410420"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-                    <ImageView
-                        android:id="@+id/tv_img_movie"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        tools:src="@drawable/poster_secretbenghazi" />
-                </androidx.cardview.widget.CardView>
+        <RatingBar
+            android:id="@+id/ratingBar_movie"
+            style="@android:style/Widget.Material.Light.RatingBar.Indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="10"
+            android:progressTint="#00E5FF"
+            app:layout_constraintStart_toStartOf="@+id/tv_genre_movie"
+            app:layout_constraintTop_toBottomOf="@+id/tv_genre_movie"
+            tools:progress="8" />
 
+        <TextView
+            android:id="@+id/tv_score_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="#00E5FF"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/ratingBar_movie"
+            app:layout_constraintStart_toEndOf="@+id/ratingBar_movie"
+            app:layout_constraintTop_toTopOf="@+id/ratingBar_movie"
+            tools:text="80" />
 
-                <TextView
-                    android:id="@+id/tv_name_movie"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/source_sans_pro"
-                    android:textColor="#00E5FF"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardIMG"
-                    tools:text="13 Hours In Desert" />
+        <com.codesgood.views.JustifiedTextView
+            android:id="@+id/tv_dec_movie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/source_sans_pro"
+            android:textColor="#00E5FF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/ratingBar_movie"
+            app:layout_constraintTop_toBottomOf="@+id/ratingBar_movie"
+            tools:text="@tools:sample/lorem/random" />
 
-                <TextView
-                    android:id="@+id/tv_genre_movie"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:textColor="#76FF03"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="@+id/tv_date_movie"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_date_movie"
-                    tools:text="Drama , Technology, Adventure" />
+        <TextView
+            android:id="@+id/tv_date_movie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/source_sans_pro"
+            android:textColor="#1DE9B6"
+            app:layout_constraintStart_toStartOf="@+id/tv_name_movie"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name_movie"
+            tools:text="26 Desember 2020" />
 
-                <RatingBar
-                    android:id="@+id/ratingBar_movie"
-                    style="@android:style/Widget.Material.Light.RatingBar.Indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:max="10"
-                    android:progressTint="#00E5FF"
-                    app:layout_constraintStart_toStartOf="@+id/tv_genre_movie"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_genre_movie"
-                    tools:progress="8" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
 
-                <TextView
-                    android:id="@+id/tv_score_movie"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:textColor="#00E5FF"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="@+id/ratingBar_movie"
-                    app:layout_constraintStart_toEndOf="@+id/ratingBar_movie"
-                    app:layout_constraintTop_toTopOf="@+id/ratingBar_movie"
-                    tools:text="80" />
-
-                <com.codesgood.views.JustifiedTextView
-                    android:id="@+id/tv_dec_movie"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="@font/source_sans_pro"
-                    android:textColor="#00E5FF"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/ratingBar_movie"
-                    app:layout_constraintTop_toBottomOf="@+id/ratingBar_movie"
-                    tools:text="@tools:sample/lorem/random" />
-
-                <TextView
-                    android:id="@+id/tv_date_movie"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:fontFamily="@font/source_sans_pro"
-                    android:textColor="#1DE9B6"
-                    app:layout_constraintStart_toStartOf="@+id/tv_name_movie"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_name_movie"
-                    tools:text="26 Desember 2020" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            </ScrollView>
-        </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>

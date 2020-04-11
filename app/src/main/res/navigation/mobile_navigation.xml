@@ -7,26 +7,41 @@
         android:id="@+id/navigation_movies"
         android:name="com.example.moviesapp.ui.movies.MoviesFragment"
         android:label="@string/menu_movies"
-        tools:layout="@layout/fragment_movies" >
-        <action app:destination="@id/navigation_detail_movies" />
+        tools:layout="@layout/fragment_movies">
+        <action
+            android:id="@+id/action_navigation_movies_to_navigation_movie_detail"
+            app:destination="@id/navigation_movie_detail" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_detail_movies"
+        android:id="@+id/navigation_movie_detail"
         android:name="com.example.moviesapp.ui.movies.detailfragment.DetailMovies"
-        tools:layout="@layout/fragment_detail_movies" />
+        android:label="@string/menu_movies"
+        tools:layout="@layout/fragment_detail_movies">
+        <action
+            android:id="@+id/action_navigation_movie_detail_to_navigation_movies"
+            app:destination="@id/navigation_movies" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_tvshow"
         android:name="com.example.moviesapp.ui.tvshow.TvShowFragment"
         android:label="@string/menu_tvshow"
         tools:layout="@layout/fragment_tvshow">
-        <action app:destination="@id/navigation_detail_tvshow" />
+        <action
+            android:id="@+id/action_navigation_tvshow_to_navigation_tvshow_detail"
+            app:destination="@id/navigation_tvshow_detail" />
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_detail_tvshow"
+        android:id="@+id/navigation_tvshow_detail"
         android:name="com.example.moviesapp.ui.tvshow.detailFragment.DetailTvshow"
-        tools:layout="@layout/fragment_detail_tvshow"/>
+        android:label="@string/menu_tvshow"
+        tools:layout="@layout/fragment_detail_tvshow">
+        <action
+            android:id="@+id/action_navigation_tvshow_detail_to_navigation_tvshow"
+            app:destination="@id/navigation_tvshow" />
+    </fragment>
+
 "
 </navigation>
