@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.moviesapp.R
 import com.example.moviesapp.backend.data.api.MovieDBClient
 import com.example.moviesapp.backend.data.api.MovieDBInterface
 import com.example.moviesapp.backend.data.repository.NetworkState
 import com.example.moviesapp.ui.tvshow.adapter.TVAdapter
-import com.example.moviesapp.ui.tvshow.detailFragment.DetailTvshow
 import com.example.moviesapp.ui.tvshow.viewmodel.TVViewModel
 import kotlinx.android.synthetic.main.fragment_tvshow.*
 
@@ -62,22 +62,16 @@ class TvShowFragment : Fragment() {
             override fun onItemClicked(id: Int?) {
 
                 //siapkan data
-                val fragGet = DetailTvshow()
                 val bundle = Bundle()
 
                 // masukkan ke bundle
                 if (id != null) {
                     bundle.putInt("id", id)
                 }
-                fragGet.arguments = bundle
 
                 // buat perpindahan fragment
-                val mFragment = fragmentManager
-                mFragment?.beginTransaction()?.apply {
-                    add(R.id.nav_host_fragment, fragGet, DetailTvshow::class.java.simpleName)
-                    addToBackStack(null)
-                    commit()
-                }
+                view.findNavController()
+                    .navigate(R.id.action_navigation_tvshow_to_navigation_tvshow_detail, bundle)
             }
 
         })

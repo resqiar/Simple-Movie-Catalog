@@ -1,6 +1,5 @@
 package com.example.moviesapp.ui.movies
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,17 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.moviesapp.R
-import com.example.moviesapp.backend.data.`object`.MovieDetails
 import com.example.moviesapp.backend.data.api.MovieDBClient
 import com.example.moviesapp.backend.data.api.MovieDBInterface
 import com.example.moviesapp.backend.data.repository.NetworkState
 import com.example.moviesapp.ui.movies.adapter.MovieAdapter
-import com.example.moviesapp.ui.movies.detailfragment.DetailMovies
 import com.example.moviesapp.ui.movies.viewmodel.MovieViewModel
 import kotlinx.android.synthetic.main.fragment_movies.*
-import kotlinx.android.synthetic.main.network_state_item.*
 
 class MoviesFragment : Fragment() {
 
@@ -65,22 +62,16 @@ class MoviesFragment : Fragment() {
             override fun onItemClicked(id: Int?) {
 
                 //siapkan data parcelable
-                val fragGet = DetailMovies()
                 val bundle = Bundle()
 
                 // masukkan ke bundle
                 if (id != null) {
                     bundle.putInt("id", id)
                 }
-                fragGet.arguments = bundle
 
                 // buat perpindahan fragment
-                val mFragment = fragmentManager
-                mFragment?.beginTransaction()?.apply {
-                    add(R.id.nav_host_fragment, fragGet, MovieDetails::class.java.simpleName)
-                    addToBackStack(null)
-                    commit()
-                }
+                view.findNavController()
+                    .navigate(R.id.action_navigation_movies_to_navigation_movie_detail, bundle)
             }
 
         })
